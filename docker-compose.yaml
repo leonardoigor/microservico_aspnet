@@ -1,0 +1,36 @@
+
+version: '3.7'
+
+
+
+services:
+  csharp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/www/app
+    tty: true
+    depends_on:
+      - adminer
+    ports:
+      - "5084:5084"
+
+  mysqli:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3310:3306"
+    volumes:
+      - ./db/mysql:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysqli
