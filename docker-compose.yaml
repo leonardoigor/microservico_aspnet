@@ -33,4 +33,24 @@ services:
     ports:
       - 8080:8080
     depends_on:
+      - rabbitmp
+  rabbitmp:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    ports:
+        - 5672:5672
+        - 15672:15672
+    depends_on:
       - mysqli
+    volumes:
+      - ./db/rabbitmq:/var/lib/rabbitmq
+  api_node:
+    image: node
+    restart: always
+    ports:
+      - "5080:5080"
+    depends_on:
+      - rabbitmp
+    volumes:
+      - ./javascript:/www/api
+    tty: true
